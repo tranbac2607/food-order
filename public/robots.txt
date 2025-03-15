@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://food-order-five-green.vercel.app/list-food
+
+# Sitemaps
+Sitemap: https://food-order-five-green.vercel.app/list-food/sitemap.xml
