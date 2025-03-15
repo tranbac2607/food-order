@@ -10,14 +10,16 @@ interface CartItem {
 
 interface CartProps {
   cartItems: CartItem[];
-  onRemoveItem: (id: number) => void;
+  onIncrease: (id: number) => void;
+  onDecrease: (id: number) => void;
   onCheckout: () => void;
   onBack: () => void;
 }
 
 const Cart: React.FC<CartProps> = ({
   cartItems,
-  onRemoveItem,
+  onIncrease,
+  onDecrease,
   onCheckout,
   onBack,
 }) => {
@@ -57,12 +59,26 @@ const Cart: React.FC<CartProps> = ({
                     </p>
                   </div>
                 </div>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                  onClick={() => onRemoveItem(item.id)}
-                >
-                  ❌ Xóa
-                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 text-sm rounded hover:bg-red-600 transition"
+                    onClick={() => onDecrease(item.id)}
+                  >
+                    ➖
+                  </button>
+
+                  <span className="text-lg text-black font-semibold">
+                    {item.quantity}
+                  </span>
+
+                  <button
+                    className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600 transition"
+                    onClick={() => onIncrease(item.id)}
+                  >
+                    ➕
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

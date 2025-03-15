@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import FoodList from '@/components/food-list';
-import Cart from '@/components/food-list/card';
+import Cart from '@/components/food-list/cart';
 
 interface FoodItem {
   id: number;
@@ -12,7 +12,7 @@ interface FoodItem {
   quantity: number;
 }
 
-const foodItems = [
+const foodItems: FoodItem[] = [
   {
     id: 1,
     name: 'Phở Bò',
@@ -46,6 +46,7 @@ const App: React.FC = () => {
   const [foods, setFoods] = useState<FoodItem[]>(foodItems);
   const [showCart, setShowCart] = useState(false);
 
+  // ✅ Tăng số lượng món ăn
   const handleIncrease = (id: number) => {
     setFoods(prev =>
       prev.map(item =>
@@ -54,25 +55,21 @@ const App: React.FC = () => {
     );
   };
 
+  // ✅ Giảm số lượng món ăn, nếu về 0 thì xóa khỏi giỏ hàng
   const handleDecrease = (id: number) => {
     setFoods(prev =>
       prev.map(item =>
-        item.id === id && item.quantity > 0
-          ? { ...item, quantity: item.quantity - 1 }
+        item.id === id
+          ? { ...item, quantity: Math.max(0, item.quantity - 1) }
           : item
       )
     );
   };
 
-  const handleRemoveItem = (id: number) => {
-    setFoods(prev =>
-      prev.map(item => (item.id === id ? { ...item, quantity: 0 } : item))
-    );
-  };
-
+  // ✅ Xử lý thanh toán
   const handleCheckout = () => {
     alert('Thanh toán thành công!');
-    setFoods(foodItems);
+    setFoods(foodItems); // Reset giỏ hàng về mặc định
     setShowCart(false);
   };
 
@@ -88,7 +85,8 @@ const App: React.FC = () => {
         {showCart ? (
           <Cart
             cartItems={cartItems}
-            onRemoveItem={handleRemoveItem}
+            onIncrease={handleIncrease} // ✅ Truyền vào để tăng số lượng món trong giỏ
+            onDecrease={handleDecrease} // ✅ Truyền vào để giảm số lượng món trong giỏ
             onCheckout={handleCheckout}
             onBack={() => setShowCart(false)}
           />
