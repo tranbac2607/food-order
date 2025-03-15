@@ -12,35 +12,38 @@ interface FoodItem {
   quantity: number;
 }
 
-const initialFoods: FoodItem[] = [
+const foodItems = [
   {
     id: 1,
-    name: '🍕 Pizza',
-    description: 'Ngon, nóng hổi!',
-    image: 'pizza.jpg',
-    price: 120000,
+    name: 'Phở Bò',
+    description: 'Món ăn truyền thống Việt Nam với nước dùng thơm ngon.',
+    image:
+      'https://static.kinhtedothi.vn/w960/images/upload/2022/09/16/phobohanoi.jpg',
+    price: 50000,
     quantity: 0,
   },
   {
     id: 2,
-    name: '🍔 Burger',
-    description: 'Siêu ngon!',
-    image: 'burger.jpg',
-    price: 90000,
+    name: 'Bánh Mì',
+    description: 'Bánh mì giòn rụm với nhân thịt, chả, rau thơm.',
+    image:
+      'https://thuonghieuquocgia.congthuong.vn/stores/news_dataimages/2024/032024/16/09/top-1-mon-sandwich-ngon-nhat-the-gioi-goi-ten-banh-my-viet-nam1710498007-182420240316092132.jpg?rt=20240316092204',
+    price: 30000,
     quantity: 0,
   },
   {
     id: 3,
-    name: '🍣 Sushi',
-    description: 'Hải sản tươi sống',
-    image: 'sushi.jpg',
-    price: 150000,
+    name: 'Bún Chả',
+    description: 'Món bún chả nướng Hà Nội thơm ngon.',
+    image:
+      'https://khaihoanphuquoc.com.vn/wp-content/uploads/2023/08/cach-lam-nuoc-mam-bun-cha-02.jpg',
+    price: 60000,
     quantity: 0,
   },
 ];
 
 const App: React.FC = () => {
-  const [foods, setFoods] = useState<FoodItem[]>(initialFoods);
+  const [foods, setFoods] = useState<FoodItem[]>(foodItems);
   const [showCart, setShowCart] = useState(false);
 
   const handleIncrease = (id: number) => {
@@ -69,7 +72,7 @@ const App: React.FC = () => {
 
   const handleCheckout = () => {
     alert('Thanh toán thành công!');
-    setFoods(initialFoods);
+    setFoods(foodItems);
     setShowCart(false);
   };
 

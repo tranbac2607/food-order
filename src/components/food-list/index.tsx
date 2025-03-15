@@ -25,38 +25,41 @@ const FoodList: React.FC<FoodListProps> = ({
       {foodItems.map((item, index) => (
         <div
           key={item.id}
-          className="bg-white p-4 rounded-lg shadow-md transition-transform transform hover:scale-105 animate-fadeIn"
-          style={{ animationDelay: `${index * 0.1}s` }} // Delay để hiệu ứng chạy lần lượt
+          className="bg-white p-5 rounded-xl shadow-lg hover:shadow-2xl transition-shadow transform hover:-translate-y-2 animate-fadeIn opacity-0"
+          style={{
+            animation: `fadeIn 0.5s ease-out forwards`,
+            animationDelay: `${index * 0.1}s`,
+          }}
         >
           <img
             src={item.image}
             alt={item.name}
-            className="w-full h-40 object-cover rounded"
+            className="w-full h-40 object-cover rounded-lg"
           />
-          <h3 className="text-lg text-black font-semibold mt-2">{item.name}</h3>
-          <p className="text-gray-600 text-sm sm:text-base">
-            {item.description}
-          </p>
-          <p className="text-green-600 font-bold mt-1 text-base sm:text-lg">
+          <h3 className="text-lg text-gray-900 font-semibold mt-3">
+            {item.name}
+          </h3>
+          <p className="text-gray-600 text-sm">{item.description}</p>
+          <p className="text-green-600 font-bold mt-2 text-base sm:text-lg">
             💰 {item.price.toLocaleString()} VNĐ
           </p>
 
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-4 flex items-center justify-center gap-4">
             {item.quantity > 0 && (
               <button
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300"
                 onClick={() => onDecrease(item.id)}
               >
                 ➖
               </button>
             )}
 
-            <span className="text-lg text-black font-semibold">
+            <span className="text-lg text-gray-900 font-semibold">
               {item.quantity}
             </span>
 
             <button
-              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+              className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-300"
               onClick={() => onIncrease(item.id)}
             >
               ➕
