@@ -21,49 +21,56 @@ const FoodList: React.FC<FoodListProps> = ({
   onDecrease,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-6 md:px-8">
       {foodItems.map((item, index) => (
         <div
           key={item.id}
-          className="bg-white p-5 rounded-xl shadow-lg hover:shadow-2xl transition-shadow transform hover:-translate-y-2 animate-fadeIn opacity-0"
-          style={{
-            animation: `fadeIn 0.5s ease-out forwards`,
-            animationDelay: `${index * 0.1}s`,
-          }}
+          className="bg-white p-4 rounded-lg shadow-md transition-transform transform hover:scale-105 animate-fadeIn flex flex-row md:flex-col items-center md:items-start"
+          style={{ animationDelay: `${index * 0.1}s` }}
         >
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-full h-40 object-cover rounded-lg"
-          />
-          <h3 className="text-lg text-gray-900 font-semibold mt-3">
-            {item.name}
-          </h3>
-          <p className="text-gray-600 text-sm">{item.description}</p>
-          <p className="text-green-600 font-bold mt-2 text-base sm:text-lg">
-            💰 {item.price.toLocaleString()} VNĐ
-          </p>
+          {/* Ảnh (Điện thoại: bên trái 50%, Tablet & Desktop: trên) */}
+          <div className="w-1/2 md:w-full flex items-center">
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full h-28 sm:h-32 md:h-40 object-cover rounded-md"
+            />
+          </div>
 
-          <div className="mt-4 flex items-center justify-center gap-4">
-            {item.quantity > 0 && (
+          {/* Nội dung (Điện thoại: bên phải 50%, Tablet & Desktop: dưới) */}
+          <div className="w-1/2 md:w-full ml-4 md:ml-0 mt-0 md:mt-4 flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg text-black font-semibold">{item.name}</h3>
+              <p className="text-gray-600 text-sm sm:text-base mt-1">
+                {item.description}
+              </p>
+              <p className="text-green-600 font-bold mt-2 text-base sm:text-lg">
+                💰 {item.price.toLocaleString()} VNĐ
+              </p>
+            </div>
+
+            {/* Nút đặt món */}
+            <div className="mt-3 flex items-center gap-2">
+              {item.quantity > 0 && (
+                <button
+                  className="bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600 transition"
+                  onClick={() => onDecrease(item.id)}
+                >
+                  ➖
+                </button>
+              )}
+
+              <span className="text-md text-black font-semibold">
+                {item.quantity}
+              </span>
+
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300"
-                onClick={() => onDecrease(item.id)}
+                className="bg-blue-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600 transition"
+                onClick={() => onIncrease(item.id)}
               >
-                ➖
+                ➕
               </button>
-            )}
-
-            <span className="text-lg text-gray-900 font-semibold">
-              {item.quantity}
-            </span>
-
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-300"
-              onClick={() => onIncrease(item.id)}
-            >
-              ➕
-            </button>
+            </div>
           </div>
         </div>
       ))}
