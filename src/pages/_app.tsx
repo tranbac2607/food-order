@@ -1,10 +1,8 @@
 import type { AppProps } from 'next/app';
 
 import { wrapper } from '@/store/store';
-
 import MainLayout from '@/layouts/main-layout';
 import '../styles/globals.css';
-
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

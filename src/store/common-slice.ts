@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AppState } from './store';
 import { HYDRATE } from 'next-redux-wrapper';
+
+import type { AppState } from './store';
 
 export type CommonState = {
   isLoading: boolean;
