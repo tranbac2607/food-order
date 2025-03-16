@@ -2,24 +2,22 @@ import type { ThunkAction, Action } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 
-import { authSlice } from './auth-slice';
-import { commonSlice } from './common-slice';
+import { foodSlice } from './slice/food-slice';
 
-const makeStore = () =>
-  configureStore({
-    reducer: {
-      [authSlice.name]: authSlice.reducer,
-      [commonSlice.name]: commonSlice.reducer,
-    },
-    devTools: true,
-    middleware: getDefaultMiddleware =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }),
-  });
+export const store = configureStore({
+  reducer: {
+    [foodSlice.name]: foodSlice.reducer,
+  },
+  devTools: process.env.NODE_ENV !== 'production',
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
 
-export type AppStore = ReturnType<typeof makeStore>;
+export type AppStore = typeof store;
 export type AppState = ReturnType<AppStore['getState']>;
+export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppState,
@@ -27,4 +25,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action
 >;
 
-export const wrapper = createWrapper<AppStore>(makeStore);
+export const wrapper = createWrapper(() => store, {
+  debug: process.env.NODE_ENV !== 'production',
+});

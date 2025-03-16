@@ -34,7 +34,7 @@ const config: Config = {
           secondary: '#0C0F19',
         },
         background: {
-          primary: '#FFFFFF',
+          primary: '#f3f4f6',
         },
       },
       fontFamily: {

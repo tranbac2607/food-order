@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import FoodList from '@/components/food-list';
 import Cart from '@/components/food-list/cart';
+import { selectFoods } from '@/store/selector/food-selector';
+import { getFoods } from '@/store/slice/food-slice';
+import type { AppDispatch } from '@/store/store';
 
 interface FoodItem {
   id: number;
@@ -45,6 +49,13 @@ const foodItems: FoodItem[] = [
 const App: React.FC = () => {
   const [foods, setFoods] = useState<FoodItem[]>(foodItems);
   const [showCart, setShowCart] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+  // const foods = useSelector(selectFoods);
+
+  useEffect(() => {
+    dispatch(getFoods());
+  }, [dispatch]);
 
   // ✅ Tăng số lượng món ăn
   const handleIncrease = (id: number) => {
