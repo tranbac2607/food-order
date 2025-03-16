@@ -2,10 +2,12 @@ import type { ThunkAction, Action } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 
+import { commonSlice } from './slice/common-slice';
 import { foodSlice } from './slice/food-slice';
 
 export const store = configureStore({
   reducer: {
+    [commonSlice.name]: commonSlice.reducer,
     [foodSlice.name]: foodSlice.reducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
