@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import FoodList from '@/components/food-list';
 import Cart from '@/components/food-list/cart';
 import { selectFoods } from '@/store/selector/food-selector';
 import { getFoods } from '@/store/slice/food-slice';
-import type { AppDispatch } from '@/store/store';
+import { useAppDispatch } from '@/store/hooks';
+import CartButton from '@/components/food-list/cart-button';
+import FilterFood from '@/components/food-list/filter';
 
 interface FoodItem {
   id: number;
@@ -14,50 +16,76 @@ interface FoodItem {
   description: string;
   price: number;
   quantity: number;
+  category: string;
 }
 
 const foodItems: FoodItem[] = [
   {
     id: 1,
-    name: 'Phở Bò',
-    description: 'Món ăn truyền thống Việt Nam với nước dùng thơm ngon.',
+    name: 'Lẩu riêu cua',
+    description: 'Lẩu thơm ngon...',
     image:
-      'https://static.kinhtedothi.vn/w960/images/upload/2022/09/16/phobohanoi.jpg',
-    price: 50000,
+      'https://storage.quannhautudo.com/data/thumb_1200/Data/images/product/2024/04/202404120255444353.webp',
+    price: 350000,
     quantity: 0,
+    category: 'Lẩu',
   },
   {
     id: 2,
-    name: 'Bánh Mì',
-    description: 'Bánh mì giòn rụm với nhân thịt, chả, rau thơm.',
-    image:
-      'https://thuonghieuquocgia.congthuong.vn/stores/news_dataimages/2024/032024/16/09/top-1-mon-sandwich-ngon-nhat-the-gioi-goi-ten-banh-my-viet-nam1710498007-182420240316092132.jpg?rt=20240316092204',
-    price: 30000,
+    name: 'Lẩu ếch',
+    description: 'Lẩu ngon...',
+    image: 'https://www.lorca.vn/wp-content/uploads/2024/09/2-49.jpg',
+    price: 350000,
     quantity: 0,
+    category: 'Lẩu',
   },
   {
     id: 3,
-    name: 'Bún Chả',
-    description: 'Món bún chả nướng Hà Nội thơm ngon.',
+    name: 'Bò nướng',
+    description: 'Bò nướng than...',
     image:
-      'https://khaihoanphuquoc.com.vn/wp-content/uploads/2023/08/cach-lam-nuoc-mam-bun-cha-02.jpg',
-    price: 60000,
+      'https://cdn.tgdd.vn/Files/2018/09/11/1116585/cach-uop-thit-bo-nuong-thom-mem-chuan-vi-nhu-ngoai-hang-5.jpg',
+    price: 250000,
     quantity: 0,
+    category: 'Nướng',
+  },
+  {
+    id: 4,
+    name: 'Khoai tây chiên',
+    description: 'Khoai giòn rụm...',
+    image:
+      'https://cdn.tgdd.vn/Files/2015/03/01/615221/bi-quyet-lam-moi-khoai-tay-chien-cu-5-760x367.jpg',
+    price: 50000,
+    quantity: 0,
+    category: 'Món ăn kèm',
+  },
+  {
+    id: 5,
+    name: 'Pepsi',
+    description: 'Vị ngon...',
+    image:
+      'https://product.hstatic.net/1000288770/product/nuoc_ngot_pepsi_cola_lon_330ml_5d1df64d846f4f93aa666c723cea177d_master.jpg',
+    price: 20000,
+    quantity: 0,
+    category: 'Đồ uống',
   },
 ];
 
+const categories = ['Lẩu', 'Nướng', 'Món ăn kèm', 'Đồ uống'];
+
 const App: React.FC = () => {
   const [foods, setFoods] = useState<FoodItem[]>(foodItems);
+  const [selectedCategory, setSelectedCategory] = useState('Lẩu');
+  const [searchTerm, setSearchTerm] = useState('');
   const [showCart, setShowCart] = useState(false);
 
-  const dispatch = useDispatch<AppDispatch>();
-  // const foods = useSelector(selectFoods);
+  const dispatch = useAppDispatch();
+  const foodList = useSelector(selectFoods);
 
   useEffect(() => {
     dispatch(getFoods());
   }, [dispatch]);
 
-  // ✅ Tăng số lượng món ăn
   const handleIncrease = (id: number) => {
     setFoods(prev =>
       prev.map(item =>
@@ -66,7 +94,6 @@ const App: React.FC = () => {
     );
   };
 
-  // ✅ Giảm số lượng món ăn, nếu về 0 thì xóa khỏi giỏ hàng
   const handleDecrease = (id: number) => {
     setFoods(prev =>
       prev.map(item =>
@@ -77,46 +104,51 @@ const App: React.FC = () => {
     );
   };
 
-  // ✅ Xử lý thanh toán
-  const handleCheckout = () => {
-    alert('Thanh toán thành công!');
-    setFoods(foodItems); // Reset giỏ hàng về mặc định
-    setShowCart(false);
+  const handleRemove = (id: number) => {
+    setFoods(prev =>
+      prev.map(item => (item.id === id ? { ...item, quantity: 0 } : item))
+    );
   };
 
-  const cartItems = foods.filter(item => item.quantity > 0);
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
+  const filteredFoods = foods.filter(
+    item =>
+      item.category === selectedCategory &&
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="bg-gray-100 flex justify-center items-center p-6">
+    <div className="bg-gray-100 flex justify-center items-center">
       <div className="max-w-5xl w-full">
         {showCart ? (
           <Cart
-            cartItems={cartItems}
-            onIncrease={handleIncrease} // ✅ Truyền vào để tăng số lượng món trong giỏ
-            onDecrease={handleDecrease} // ✅ Truyền vào để giảm số lượng món trong giỏ
-            onCheckout={handleCheckout}
+            cartItems={foods.filter(item => item.quantity > 0)}
+            onIncrease={handleIncrease}
+            onDecrease={handleDecrease}
+            onRemove={handleRemove}
+            onCheckout={() => alert('Thanh toán thành công!')}
             onBack={() => setShowCart(false)}
           />
         ) : (
-          <FoodList
-            foodItems={foods}
-            onIncrease={handleIncrease}
-            onDecrease={handleDecrease}
-          />
-        )}
+          <>
+            <FilterFood
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
 
-        {!showCart && cartItems.length > 0 && (
-          <button
-            className="mt-6 w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition"
-            onClick={() => setShowCart(true)}
-          >
-            🛍️ Xem chi tiết đơn hàng ({cartItems.length} món) -{' '}
-            {totalPrice.toLocaleString()} VNĐ
-          </button>
+            <FoodList
+              foodItems={filteredFoods}
+              onIncrease={handleIncrease}
+              onDecrease={handleDecrease}
+            />
+
+            <CartButton
+              cartCount={foods.filter(item => item.quantity > 0).length}
+              onClick={() => setShowCart(true)}
+            />
+          </>
         )}
       </div>
     </div>

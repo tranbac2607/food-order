@@ -6,9 +6,11 @@ import httpClient from '@/api';
 interface FoodItem {
   id: number;
   name: string;
-  image: string;
   description: string;
   price: number;
+  categoryId: number;
+  available: boolean;
+  images: FormData;
 }
 
 interface FoodState {
@@ -21,6 +23,11 @@ const initialState: FoodState = {
   error: null,
 };
 
+interface AddFoodResponse {
+  success: boolean;
+  message: string;
+}
+
 export const getFoods = createAsyncThunk<
   FoodItem[],
   void,
@@ -31,6 +38,23 @@ export const getFoods = createAsyncThunk<
     return response.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || 'Lỗi tải dữ liệu');
+  }
+});
+
+export const addFood = createAsyncThunk<
+  AddFoodResponse,
+  FormData,
+  { rejectValue: string }
+>('foods/addFood', async (formData, { rejectWithValue }) => {
+  try {
+    const response = await httpClient.post('/api/foods', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return { success: true, message: 'Tạo món ăn thành công' };
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || 'Lỗi khi tạo món ăn'
+    );
   }
 });
 
@@ -48,7 +72,9 @@ export const foodSlice = createSlice({
       )
       .addCase(getFoods.rejected, (state, action) => {
         state.error = action.payload || 'Something went wrong';
-      });
+      })
+      .addCase(addFood.rejected, () => {})
+      .addCase(addFood.fulfilled, () => {});
   },
 });
 
